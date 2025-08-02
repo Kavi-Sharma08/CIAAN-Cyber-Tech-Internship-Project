@@ -1,8 +1,9 @@
-import React from 'react'
-
+import { Outlet } from "react-router-dom"
 const App = () => {
   return (
-    <div className='text-2xl'>App</div>
+    <div>
+      <Outlet/>
+    </div>
   )
 }
 
