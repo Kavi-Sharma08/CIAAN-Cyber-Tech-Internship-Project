@@ -1,6 +1,6 @@
 import express from "express";
 const addUser = express.Router();
-import { LoginModel } from "../models/Login.js";
+import { UserModel } from "../models/UserModel.js";
 import { validateData } from "../utils/validate.js";
 import bcrypt from "bcrypt"
 
@@ -9,10 +9,9 @@ addUser.post("/signup" , async (req , res)=>{
     const {email , password} = body;
     try {
         const isDataValid = validateData(body);
-        console.log(isDataValid)
         if(isDataValid){
             const hashedPassword =await bcrypt.hash(password ,10);
-            const user  = await new LoginModel({
+            const user  = await new UserModel({
                 email,
                 password : hashedPassword
             });
@@ -38,7 +37,7 @@ addUser.post("/login" , async (req , res)=>{
     try {
         const isDataValid = validateData(body);
         if(isDataValid){
-            const userData = await LoginModel.findOne({email});
+            const userData = await UserModel.findOne({email});
             if(!userData){
                 return res.json({
                     message : "User Not Found"

@@ -4,7 +4,8 @@ import express from "express"
 import cors from "cors"
 import { connectDB } from "./Database/DBConnection.js"
 import { addUser } from "./routes/auth.js"
-
+import { completeProfile } from "./routes/completeProfile.js"
+import { post } from "./routes/post.js"
 const app = express();
 
 app.use(express.json())
@@ -15,6 +16,8 @@ app.use(cors({
 
 
 app.use("/" , addUser);
+app.use("/" , completeProfile)
+app.use("/" , post);
 
 
 connectDB()

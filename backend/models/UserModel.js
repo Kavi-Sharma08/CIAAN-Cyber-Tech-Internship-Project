@@ -1,6 +1,5 @@
 import mongoose, { mongo } from "mongoose";
-import bcrypt from "bcrypt"
-const LoginSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     email : {
         type : String,
         required : [true , "Email is required"],
@@ -9,12 +8,20 @@ const LoginSchema = new mongoose.Schema({
     password : {
         type : String,
         required : [true , "password is required"],
+    },
+    name : {
+        type : String
+    },
+    bio : {
+        type : String
     }
+},{
+    timestamps : true
 })
 
 
-const LoginModel = new mongoose.model("Login" , LoginSchema);
+const UserModel = new mongoose.model("User" , UserSchema);
 
 export {
-    LoginModel
+    UserModel
 }
