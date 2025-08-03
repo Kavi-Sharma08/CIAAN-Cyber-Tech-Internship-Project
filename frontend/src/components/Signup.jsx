@@ -1,29 +1,68 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SignupContainer from "../containers/SignupContainer";
 import Input from "./Input";
 import getFormConfig from "../config/SignupFormConfig";
+import toast , {Toaster} from "react-hot-toast"
 import axios from "axios";
+import { UserContext } from "../Contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 const AuthPage = () => {
+  const {user , setUser} = useContext(UserContext);
+  const navigate = useNavigate();
   const [Login, setLogin] = useState(false);
   const [FormData, setFormData] = useState({
     email : "Kavi@gmail.com",
     password : "Kavi@123"
-  })  
-
+  }) 
   const formConfig = getFormConfig(Login);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (Login) {
-        console.log(FormData)
-      
-    } else {
-        const data = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signup` , FormData)
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login` , FormData)
+      const errorMessage = response?.data?.message;
+      if(errorMessage){
+        return toast.error(errorMessage)
+      }
+      const userData = response?.data?.userData;
+      const isProfilePending = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/getProfile?id=${userData._id}`);
+
+      const message = isProfilePending?.data?.message;
+      if(message=="Profile is completed"){
+        setUser(userData);
+        return navigate("/all-post")
+      }
+      if(message=="User not Found"){
+        return toast.error(message);
+      }
+      if(message=="Complete your Profile"){
+        return navigate("/completeProfile");
+      }
+      setUser(userData);
+      navigate("/completeProfile")
+    } 
+    else {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signup` , FormData);
+      const errorMessage = response?.data?.message;
+
+      if(errorMessage){
+        return toast.error(errorMessage)
+      }
+        
+      const userData = response?.data?.user;
+      if(userData){
+        toast.success("User created")
+        
+      }
+      setUser(userData);
+      navigate("/completeProfile");
+
       
     }
   };
 
   return (
     <SignupContainer>
+      <Toaster/>
       <h2 className={`text-3xl font-bold text-center mb-6 ${formConfig.headingColor}`}>
         {formConfig.heading}
       </h2>
