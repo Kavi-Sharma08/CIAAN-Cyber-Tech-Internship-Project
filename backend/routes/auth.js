@@ -44,7 +44,7 @@ addUser.post("/login" , async (req , res)=>{
                     message : "User Not Found"
                 })
             }
-            const isPasswordCorrect = await bcrypt.compare(userData.password , password);
+            const isPasswordCorrect = await bcrypt.compare( password , userData.password );
             if(!isPasswordCorrect){
                 return res.json({
                     message : "Password is not correct"
